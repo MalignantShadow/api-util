@@ -4,8 +4,8 @@
 This module is part of ShadowAPI. Almost all other modules depend on this one.
 
 ##Features
-* Argument parsing e.g. for [Selectors](/src/info/malignantshadow/api/util/selectors) and the [Command Module](MalignantShadow/api-commands)
+* Argument parsing e.g. for [Selectors](src/info/malignantshadow/api/util/selectors) and the [Command Module](//github.com/MalignantShadow/api-commands)
 * Pagination
-* 'Random' utils, e.g. [WeightedRandom](./src/info/malignantshadow/api/util/random/WeightedRandom.java)
+* 'Random' utils, e.g. [WeightedRandom](src/info/malignantshadow/api/util/random/WeightedRandom.java)
 
 Others added as needed.
