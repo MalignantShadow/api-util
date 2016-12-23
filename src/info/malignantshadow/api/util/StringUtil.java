@@ -6,8 +6,33 @@ import java.util.List;
 import info.malignantshadow.api.util.aliases.Aliasable;
 import info.malignantshadow.api.util.aliases.Nameable;
 
+/**
+ * Utility class for Strings.
+ * 
+ * @author MalignantShadow (Caleb Downs)
+ *
+ */
 public class StringUtil {
 	
+	/**
+	 * Test if a string leniently matches another. The test string can be prefixed with the following characters:
+	 * <ul>
+	 * <li>~ - The method will return true if {@code s} contains the substring {@code test} (case-insensitive)</li>
+	 * <li>* - The method will return true if {@code s} ends with {@code test} (case-insensitive)</li>
+	 * <li>$ - The method will return true if {@code s} ends with {@code test} (case sensitive)</li>
+	 * <li>^ - The method will return true if {@code s} starts with {@code test} (case in-sensitive)</li>
+	 * <li>% - The method will return true if {@code s} starts with {@code test} (case sensitive)</li>
+	 * <li>= - The method will return true if {@code s} equals {@code test} (case sensitive)</li>
+	 * <li>> - The method will return true if {@code s} is positioned after {@code test} in a sorted list/array (case sensitive)</li>
+	 * <li>< - The method will return true if {@code s} is positioned before {@code test} in a sorted list/array (case sensitive)</li>
+	 * <li>! - Recursive. The method will return the result of {@code lenientMatch(s, sub)} where {@code sub} is equal to {@code test.substring(1)}}</li>
+	 * <li></li>
+	 * </ul>
+	 * 
+	 * @param s
+	 * @param test
+	 * @return
+	 */
 	public static boolean lenientMatch(String s, String test) {
 		if (test == null ^ s == null) //if one (but not both) are null
 			return false;
@@ -39,6 +64,15 @@ public class StringUtil {
 		return s.equalsIgnoreCase(test);
 	}
 	
+	/**
+	 * Iterate through an array of enum values and return any values whose name (or aliases) leniently match the given name.
+	 * 
+	 * @param values
+	 *            The values
+	 * @param name
+	 *            The name
+	 * @return A List of matching values.
+	 */
 	public static <E extends Enum<E>> List<E> lenientEnumSearch(E[] values, String name) {
 		List<E> list = new ArrayList<E>();
 		for (E e : values) {
@@ -63,6 +97,15 @@ public class StringUtil {
 		return list;
 	}
 	
+	/**
+	 * Iterate through an array of enum values and return any values whose name (or aliases) leniently match any of the given names.
+	 * 
+	 * @param values
+	 *            The values
+	 * @param name
+	 *            The name
+	 * @return A List of matching values.
+	 */
 	public static <E extends Enum<E>> List<E> lenientEnumSearch(E[] values, String[] input) {
 		List<E> found = new ArrayList<E>();
 		if (input == null)
@@ -74,8 +117,17 @@ public class StringUtil {
 		return found;
 	}
 	
+	/**
+	 * Apply word wrapping to the given string.
+	 * 
+	 * @param string
+	 *            The text to wrap
+	 * @param maxLength
+	 *            The maximum character length of a line.
+	 * @return The same string, with the newline character inserted where needed to apply text wrap.
+	 */
 	public static String wrap(String string, int maxLength) {
-		if (string == null || string.isEmpty())
+		if (string == null || string.isEmpty() || string.length() <= maxLength)
 			return string;
 		
 		String[] split = string.split("\\s+");
@@ -93,6 +145,13 @@ public class StringUtil {
 		return newString;
 	}
 	
+	/**
+	 * Make a string proper case. All words, aside from some small words, will be capitalized (this is ignored if the word is the first or last word).
+	 * 
+	 * @param s
+	 *            The string
+	 * @return The proper-cased string
+	 */
 	public static String toProperCase(String s) {
 		if (s.isEmpty())
 			return "";
@@ -111,7 +170,7 @@ public class StringUtil {
 					}
 				}
 			}
-			if (capitalize)
+			if (capitalize || i == 0 || i == split.length - 1) //first and last words are always capital
 				result += capitalize(word) + " ";
 			else
 				result += word.toLowerCase() + " ";
@@ -119,6 +178,13 @@ public class StringUtil {
 		return result.trim();
 	}
 	
+	/**
+	 * Make the first character in the string upper cased.
+	 * 
+	 * @param s
+	 *            The string
+	 * @return The same string, with the first character upper-cased
+	 */
 	public static String capitalize(String s) {
 		if (s.isEmpty())
 			return "";
@@ -134,6 +200,15 @@ public class StringUtil {
 		}
 	}
 	
+	/**
+	 * Tests if any of the given test string match ({@link String#equalsIgnoreCase(String)}) {@code s}
+	 * 
+	 * @param s
+	 *            The string
+	 * @param tests
+	 *            Any amount of test string
+	 * @return true if one of the given strings matches (case-insensitive) {@code s}
+	 */
 	public static boolean eic(String s, String... tests) {
 		if (tests.length == 0)
 			return true;

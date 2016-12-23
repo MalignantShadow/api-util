@@ -1,7 +1,6 @@
 package info.malignantshadow.api.util.arguments;
 
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import info.malignantshadow.api.util.Time;
 import info.malignantshadow.api.util.aliases.Aliasable;
@@ -44,7 +43,7 @@ public final class ArgumentTypes {
 		if (input == null || !input.matches(TIME_REGEX_MULTI))
 			return null;
 		
-		Pattern regex = Pattern.compile(TIME_REGEX);
+		java.util.regex.Pattern regex = java.util.regex.Pattern.compile(TIME_REGEX);
 		Matcher matcher = regex.matcher(input);
 		Time time = new Time();
 		while (matcher.find()) {
@@ -184,7 +183,23 @@ public final class ArgumentTypes {
 		return input;
 	};
 	
+	/**
+	 * Parse the argument as a {@link Selector}
+	 */
 	public static final Argument.Type<Selector> SELECTOR = (input) -> Selector.compile(input);
+	
+	/**
+	 * Parse the argument as a {@link info.malignantshadow.api.util.random.Pattern Pattern}
+	 * 
+	 * @param type
+	 *            An argument type representing the type of Object each element in the pattern should parsed as
+	 * @param <T>
+	 *            The Object type
+	 * @return An argument type representing a Pattern.
+	 */
+	public static <T> Argument.Type<info.malignantshadow.api.util.random.Pattern<T>> pattern(Argument.Type<T> type) {
+		return input -> new Pattern<T>(input, type);
+	}
 	
 	/**
 	 * Parse the argument as an array.
@@ -285,6 +300,38 @@ public final class ArgumentTypes {
 			}
 			return null;
 		};
+	}
+	
+	/**
+	 * Represents a {@link info.malignantshadow.api.util.random.Pattern Pattern} that uses an {@link Argument.Type} to get the values of each substring.
+	 * 
+	 * @author MalignantShadow (Caleb Downs)
+	 *
+	 * @param <T>
+	 *            The type of Object
+	 */
+	public static class Pattern<T> extends info.malignantshadow.api.util.random.Pattern<T> {
+		
+		private Argument.Type<T> _type;
+		
+		/**
+		 * Create a new Pattern using the given arguments.
+		 * 
+		 * @param string
+		 *            The input string
+		 * @param type
+		 *            The argument type to use when parsing each substring of the input
+		 */
+		public Pattern(String string, Argument.Type<T> type) {
+			super(string);
+			_type = type;
+		}
+		
+		@Override
+		protected T getValue(String s) {
+			return _type.getValue(s);
+		}
+		
 	}
 	
 }

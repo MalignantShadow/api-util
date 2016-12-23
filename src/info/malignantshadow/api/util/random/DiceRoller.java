@@ -3,6 +3,12 @@ package info.malignantshadow.api.util.random;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents multiple dice that can be rolled at once.
+ * 
+ * @author MalignantShadow (Caleb Downs)
+ *
+ */
 public class DiceRoller {
 	
 	private List<Dice> _dice;
@@ -12,22 +18,38 @@ public class DiceRoller {
 		_dice = new ArrayList<Dice>();
 	}
 	
-	public void addDice(Dice dice) {
-		_dice.add(dice);
-	}
-	
+	/**
+	 * Get the amount of dice used by this dice roller.
+	 * 
+	 * @return
+	 */
 	public int getAmount() {
 		return _dice.size();
 	}
 	
+	/**
+	 * Get the last roll.
+	 * 
+	 * @return The last roll.
+	 */
 	public int getLastRoll() {
 		return _roll;
 	}
 	
-	public Dice getDice(int index) {
-		return _dice.get(index);
+	/**
+	 * Get the list of dice used by this dice roller.
+	 * 
+	 * @return
+	 */
+	public List<Dice> getDice() {
+		return _dice;
 	}
 	
+	/**
+	 * Roll all dice and store the result.
+	 * 
+	 * @return
+	 */
 	public int roll() {
 		int counter = 0;
 		for (Dice d : _dice)

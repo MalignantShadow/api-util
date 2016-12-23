@@ -5,12 +5,43 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
 
+/**
+ * Utility class for {@link List} manipulation
+ * 
+ * @author MalignantShadow (Caleb Downs)
+ *
+ */
 public class ListUtil {
 	
+	/**
+	 * Represents an object that restricts the size of a list given a size
+	 * 
+	 * @author MalignantShadow (Caleb Downs)
+	 *
+	 */
+	@FunctionalInterface
 	public static interface SizeRestricter {
+		
+		/**
+		 * Restrict the size of the given list. The method of restriction is undefined, but a list should be returned
+		 * with a maximum size of {@code size} elements of the given list.
+		 * 
+		 * @param list
+		 *            The list
+		 * @param size
+		 *            The size
+		 * @return A new list containing a maximum of {@code size} elements of the given list.
+		 */
 		public <T> List<T> restrictSize(List<T> list, int size);
+		
 	}
 	
+	/**
+	 * A size restricter that simply returns the first {@code size} elements in the given list.
+	 * 
+	 * @author MalignantShadow (Caleb Downs)
+	 *
+	 */
 	public static class DefaultSizeRestricter implements SizeRestricter {
 		
 		@Override
@@ -31,6 +62,12 @@ public class ListUtil {
 		}
 	}
 	
+	/**
+	 * A size restricter that returns a list with a maximum size of {@code size} elements added at random from the given list.
+	 * 
+	 * @author MalignantShadow (Caleb Downs)
+	 *
+	 */
 	public static class RandomSizeRestricter implements SizeRestricter {
 		
 		@Override
@@ -52,10 +89,28 @@ public class ListUtil {
 		
 	}
 	
+	/**
+	 * Does the given list contain an element?
+	 * 
+	 * @param list
+	 *            The list
+	 * @param f
+	 *            A Function that takes in an element from the list and returns a Boolean representing whether the item matches the desired criteria.
+	 * @return {@code true} if the list contains the item.
+	 */
 	public static <T> boolean contains(List<T> list, Function<T, Boolean> f) {
 		return indexOf(list, f) > -1;
 	}
 	
+	/**
+	 * Get the first item that matches desired criteria.
+	 * 
+	 * @param list
+	 *            The list
+	 * @param f
+	 *            A Function that takes in an element from the list and returns a Boolean representing whether the item matches the desired criteria.
+	 * @return The found item, or {@code null} if the given list is {@null} or empty, or the item isn't found
+	 */
 	public static <T> T find(List<T> list, Function<T, Boolean> f) {
 		if (list == null || list.isEmpty() || f == null)
 			return null;
@@ -67,6 +122,15 @@ public class ListUtil {
 		return null;
 	}
 	
+	/**
+	 * Get the index of the first item matching desired criteria.
+	 * 
+	 * @param list
+	 *            The list
+	 * @param f
+	 *            A Function that takes in an element from the list and returns a Boolean representing whether the item matches the desired criteria.
+	 * @return The index of the first item matching the criteria.
+	 */
 	public static <T> int indexOf(List<T> list, Function<T, Boolean> f) {
 		if (list == null || list.isEmpty() || f == null)
 			return -1;
@@ -78,6 +142,15 @@ public class ListUtil {
 		return -1;
 	}
 	
+	/**
+	 * Remove the first item that matches the desired criteria
+	 * 
+	 * @param list
+	 *            The list
+	 * @param f
+	 *            A Function that takes in an element from the list and returns a Boolean representing whether the item matches the desired criteria.
+	 * @return The removed element, or {@code null} if none was removed.
+	 */
 	public static <T> T remove(List<T> list, Function<T, Boolean> f) {
 		int index = indexOf(list, f);
 		if (index == -1)
@@ -86,6 +159,15 @@ public class ListUtil {
 		return list.remove(index);
 	}
 	
+	/**
+	 * Get a list of all items within the given that match the desired criteria.
+	 * 
+	 * @param list
+	 *            The list
+	 * @param f
+	 *            A Function that takes in an element from the list and returns a Boolean representing whether the item matches the desired criteria.
+	 * @return A list of all items that match the criteria.
+	 */
 	public static <T> List<T> slice(List<T> list, Function<T, Boolean> f) {
 		List<T> slice = new ArrayList<T>();
 		if (list == null || list.isEmpty() || f == null)
@@ -98,45 +180,114 @@ public class ListUtil {
 		return slice;
 	}
 	
+	/**
+	 * Count the amount of items that match desired criteria.
+	 * 
+	 * @param list
+	 *            The list
+	 * @param f
+	 *            A Function that takes in an element from the list and returns a Boolean representing whether the item matches the desired criteria.
+	 * @return The amount of items matching the criteria
+	 */
 	public static <T> int count(List<T> list, Function<T, Boolean> f) {
 		return slice(list, f).size();
 	}
 	
+	/**
+	 * Replace the first item in the given list that matches the desired criteria with another item.
+	 * 
+	 * @param list
+	 *            The list
+	 * @param item
+	 *            The new item
+	 * @param f
+	 *            A Function that takes in an element from the list and returns a Boolean representing whether the item matches the desired criteria.
+	 * @return {@code true} if the item was replaced
+	 */
 	public static <T> boolean replace(List<T> list, T item, Function<T, Boolean> f) {
-		return replace(list, item, 1, f);
+		return replace(list, item, 1, f) > 0;
 	}
 	
-	public static <T> boolean replace(List<T> list, T item, int amount, Function<T, Boolean> f) {
+	/**
+	 * Replace the first {@code amount} items in the given list that matches the desired criteria with another item.
+	 * 
+	 * @param list
+	 *            The list
+	 * @param item
+	 *            The new item
+	 * @param amount
+	 *            The amount of items to replace
+	 * @param f
+	 *            A Function that takes in an element from the list and returns a Boolean representing whether the item matches the desired criteria.
+	 * @return The amount of items that were replaced
+	 */
+	public static <T> int replace(List<T> list, T item, int amount, Function<T, Boolean> f) {
 		if (list == null || list.isEmpty() || amount <= 0 || f == null)
-			return false;
+			return 0;
 		
 		int count = 0;
 		for (int i = 0; i < list.size(); i++) {
-			if (count > amount)
-				return true; //all were replaced
-				
+			if (count == amount)
+				break;
+			
 			T loopItem = list.get(i);
 			if (f.apply(loopItem)) {
 				list.set(i, item);
 				count++;
 			}
 		}
-		//could not replace all
-		return false;
+		
+		return count;
 	}
 	
+	/**
+	 * Join all elements in the list together.
+	 * 
+	 * @param list
+	 *            The list
+	 * @return The resulting String.
+	 */
 	public static <T> String join(List<T> list) {
 		return join(list, (item) -> "" + item);
 	}
 	
+	/**
+	 * Join all elements in the list together.
+	 * 
+	 * @param list
+	 *            The list
+	 * @param describer
+	 *            A Function that takes in an item of the list and returns a String that describes that item.
+	 * @return The resulting String
+	 */
 	public static <T> String join(List<T> list, Function<T, String> describer) {
 		return join(list, describer, " ");
 	}
 	
+	/**
+	 * Join all elements in the list together, separated by a delimiter.
+	 * 
+	 * @param list
+	 *            The list
+	 * @param delimiter
+	 *            The delimiter
+	 * @return The resulting String
+	 */
 	public static <T> String join(List<T> list, String delimiter) {
 		return join(list, (item) -> "" + item, delimiter);
 	}
 	
+	/**
+	 * Join all elements in the list together, separated by a delimiter.
+	 * 
+	 * @param list
+	 *            The list
+	 * @param delimiter
+	 *            The delimiter
+	 * @param describer
+	 *            A Function that takes in an item of the list and returns a String that describes that item.
+	 * @return The resulting String
+	 */
 	public static <T> String join(List<T> list, Function<T, String> describer, String delimiter) {
 		if (list == null || list.isEmpty())
 			return "";
