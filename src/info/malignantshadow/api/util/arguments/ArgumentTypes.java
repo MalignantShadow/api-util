@@ -208,18 +208,13 @@ public final class ArgumentTypes {
 	 * The input will be split by commas, and each item will be parsed with the given types, in the order they were given.
 	 * </p>
 	 * 
-	 * <p>
-	 * Literal commas are allowed; the input {@code "1,2\,3,3.14"} will yield the result {@code [1, "2,3", 3.14]},
-	 * provided that {@link #STRING} and {@link #NUMBER} (or {@link #INT} and {@link #DOUBLE}) were also given
-	 * </p>
-	 * 
 	 * @param types
 	 *            The argument types to be used for parsing
 	 * @return A {@link Argument.Type} that represents array parsing
 	 */
 	public static final Argument.Type<Object[]> arrayOf(Argument.Type<?>... types) {
 		return (input) -> {
-			String[] split = input.split("(?<!\\\\),"); // match any comma not preceded by a '\' to allow "literal comma"
+			String[] split = input.split(",");
 			Object[] values = new Object[split.length];
 			
 			for (int i = 0; i < split.length; i++) {
