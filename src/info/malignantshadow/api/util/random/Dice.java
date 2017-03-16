@@ -54,6 +54,21 @@ public class Dice {
 	}
 	
 	/**
+	 * Set which face of this Dice is face-up.
+	 * 
+	 * @param roll
+	 *            The face
+	 * @return The previous face that was up.
+	 */
+	public int setRoll(int roll) {
+		if (roll < 0 || roll > _faces)
+			throw new IllegalArgumentException(String.format("Invalid face for Dice{%d} - %d", _faces, roll));
+		int prev = _roll;
+		_roll = roll;
+		return prev;
+	}
+	
+	/**
 	 * Get the last roll of this Dice.
 	 * 
 	 * @return The last roll.
